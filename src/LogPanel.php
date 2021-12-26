@@ -44,13 +44,19 @@ class LogPanel extends \bedezign\yii2\audit\panels\LogPanel
      */
     public function save()
     {
-        Yii::error();
         $data = parent::save();
-	    foreach($data['messages'] as $message) {
-	        $traceInfo = $message[4][0];
-	        if(!$this->isCaptureAll || in_array($traceInfo['function'], $this->allowLevels)) {
-                if(preg_match('/^' . implode('|', $this->keywords) . '/', json_encode($message)) === 1) {
-                    $this->module->errorMessage(sprintf("message: %s, category: %s", $message[0], $message[1]), 1, $traceInfo['file'], $traceInfo['line'], $message[4]);
+        foreach ($data['messages'] as $message) {
+            $traceInfo = isset($message[4][0]) ? $message[4][0] : [
+                'file' => '',
+                'line' => '',
+            ];
+
+            if ($this->isCaptureAll || in_array($traceInfo['function'], $this->allowLevels) || empty($message[4])) {
+                $count = 0;
+                str_ireplace($this->keywords, '', json_encode($message, JSON_UNESCAPED_UNICODE), $count);
+                if ($count) {
+                    $uid = $this->module->getUserId();
+                    $this->module->errorMessage(sprintf("message: %s, category: %s, uid: %d", $message[0], $message[1], $uid), 1, $traceInfo['file'], $traceInfo['line'], $message[4]);
                 }
             }
         }
@@ -59,3 +65,4 @@ class LogPanel extends \bedezign\yii2\audit\panels\LogPanel
     }
 
 }
+
