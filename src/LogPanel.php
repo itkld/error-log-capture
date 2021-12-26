@@ -44,6 +44,7 @@ class LogPanel extends \bedezign\yii2\audit\panels\LogPanel
      */
     public function save()
     {
+        Yii::error();
         $data = parent::save();
 	    foreach($data['messages'] as $message) {
 	        $traceInfo = $message[4][0];

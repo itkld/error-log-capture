@@ -16,7 +16,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "bedezign/yii2-audit": "^1.0"
+        "bedezign/yii2-audit": "^1.0",
+        "psr/log": "^1.0"
     },
     "require-dev": {}
 }
