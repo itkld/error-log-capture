@@ -22,6 +22,12 @@ $config = [
                     'audit/log' => [
                         'class' => 'kld\error_log_capture\LogPanel'
                         'isCaptureAll' => true,
+                        'keywords' => [
+                            'error',
+                            'exception',
+                            '错误',
+                            '异常',
+                        ],
                         /*
                         'allowLevels' => [
                             LogLevel::WARNING,

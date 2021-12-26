@@ -2,13 +2,9 @@
 
 namespace kld\error_log_capture;
 
-use bedezign\yii2\audit\Audit;
-use bedezign\yii2\audit\components\panels\DataStoragePanelTrait;
 use Psr\Log\LogLevel;
 use Yii;
-use yii\debug\models\search\Log;
 use yii\grid\GridViewAsset;
-use yii\log\Logger;
 
 /**
  * LogPanel
@@ -16,6 +12,15 @@ use yii\log\Logger;
  */
 class LogPanel extends \bedezign\yii2\audit\panels\LogPanel
 {
+    /**
+     * keywords to capture
+     *
+     * @var string[]
+     */
+    public $keywords = [
+        'error',
+        'exception',
+    ];
     /**
      * if capture all logs
      *
@@ -42,7 +47,7 @@ class LogPanel extends \bedezign\yii2\audit\panels\LogPanel
 	    foreach($data['messages'] as $message) {
 	        $traceInfo = $message[4][0];
 	        if(!$this->isCaptureAll || in_array($traceInfo['function'], $this->allowLevels)) {
-                if(strpos(json_encode($message), "Exception") !== false) {
+                if(preg_match('/^' . implode('|', $this->keywords) . '/', json_encode($message)) === 1) {
                     $this->module->errorMessage(sprintf("message: %s, category: %s", $message[0], $message[1]), 1, $traceInfo['file'], $traceInfo['line'], $message[4]);
                 }
             }
