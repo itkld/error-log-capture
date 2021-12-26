@@ -21,6 +21,7 @@ class LogPanel extends \bedezign\yii2\audit\panels\LogPanel
         'error',
         'exception',
     ];
+
     /**
      * if capture all logs
      *
