@@ -43,7 +43,7 @@ class LogPanel extends \bedezign\yii2\audit\panels\LogPanel
 	        $traceInfo = $message[4][0];
 	        if(!$this->isCaptureAll || in_array($traceInfo['function'], $this->allowLevels)) {
                 if(strpos(json_encode($message), "Exception") !== false) {
-                    $this->module->errorMessage($message[0], 1, $traceInfo['file'], $traceInfo['line'], $message[4]);
+                    $this->module->errorMessage(sprintf("message: %s, category: %s", $message[0], $message[1]), 1, $traceInfo['file'], $traceInfo['line'], $message[4]);
                 }
             }
         }
