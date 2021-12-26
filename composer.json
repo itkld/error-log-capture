@@ -1,0 +1,22 @@
+{
+    "name": "kld/error-log-capture",
+    "description": "capture errors from log and save index to entry",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "kld\\error_log_capture\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "zy",
+            "email": "itkld@kalading.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "bedezign/yii2-audit": "^1.0"
+    },
+    "require-dev": {}
+}
