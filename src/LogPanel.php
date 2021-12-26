@@ -4,9 +4,11 @@ namespace kld\error_log_capture;
 
 use bedezign\yii2\audit\Audit;
 use bedezign\yii2\audit\components\panels\DataStoragePanelTrait;
+use Psr\Log\LogLevel;
 use Yii;
 use yii\debug\models\search\Log;
 use yii\grid\GridViewAsset;
+use yii\log\Logger;
 
 /**
  * LogPanel
@@ -15,25 +17,37 @@ use yii\grid\GridViewAsset;
 class LogPanel extends \bedezign\yii2\audit\panels\LogPanel
 {
     /**
+     * if capture all logs
+     *
+     * @var bool
+     */
+    public $isCaptureAll = false;
+
+    /**
+     * allow capture levels
+     *
+     * @var array
+     */
+    public $allowLevels = [
+        LogLevel::WARNING,
+        LogLevel::ERROR,
+    ];
+
+    /**
      * @inheritdoc
      */
     public function save()
     {
         $data = parent::save();
-
-        // get entry info
-        $errorLogs = [];
 	    foreach($data['messages'] as $message) {
-            if(strpos(json_encode($message), "Exception") !== false) {
-                $errorLogs[] = $message;
-                var_dump($message);
+	        $traceInfo = $message[4][0];
+	        if(!$this->isCaptureAll || in_array($traceInfo['function'], $this->allowLevels)) {
+                if(strpos(json_encode($message), "Exception") !== false) {
+                    $this->module->errorMessage($message[0], 1, $traceInfo['file'], $traceInfo['line'], $message[4]);
+                }
             }
         }
 
-	    // if has error log for this entry, save index to error
-        //if(!empty($errorLogs)) {
-        //    $this->module->errorMessage('', 1, '', 1, implode("<br />", $errorLogs));
-        //}
         return (isset($data['messages']) && count($data['messages']) > 0) ? $data : null;
     }
 
